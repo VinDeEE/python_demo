@@ -11,6 +11,7 @@ from pathlib import Path
 
 # 从 openai SDK 导入 OpenAI 客户端（这里用于阿里 DashScope 的兼容接口）
 from openai import OpenAI
+# 请问import和from的作用和区别,这里path是什么,pathlib是什么,两者是包含关系吗
 
 
 # 定义函数：读取项目根目录 .env 文件，并把内容放进环境变量
