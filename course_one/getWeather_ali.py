@@ -14,6 +14,18 @@ from openai import OpenAI
 # 请问import和from的作用和区别,这里path是什么,pathlib是什么,两者是包含关系吗
 
 
+def print_model_response(label: str, response) -> None:
+    """打印模型返回的完整结构，便于调试每次调用。"""
+    print(f"\n[{label}]")
+    if hasattr(response, "model_dump_json"):
+        print(response.model_dump_json(indent=2, ensure_ascii=False))
+        return
+    if hasattr(response, "model_dump"):
+        print(json.dumps(response.model_dump(), ensure_ascii=False, indent=2))
+        return
+    print(response)
+
+
 # 定义函数：读取项目根目录 .env 文件，并把内容放进环境变量
 def load_env_file() -> None:
     # 函数文档字符串：说明函数用途
@@ -43,7 +55,7 @@ def get_weather(city: str) -> str:
     # 函数文档字符串：说明入参和功能
     """查询指定城市天气（演示数据）。"""
     # 返回中文天气文案（f-string 会把 city 变量替换进去）
-    return f"{city}天气晴朗。"
+    return f"{city}天气晴朗。本地"
 
 
 # 执行 .env 加载，让后续代码能读取 DASHSCOPE_API_KEY
@@ -126,6 +138,7 @@ first_response = client.chat.completions.create(
     # auto 表示让模型自动决定是否调工具
     tool_choice="auto",
 )
+print_model_response("first_response", first_response)
 
 # 取出第一条候选回复中的 message 对象
 first_message = first_response.choices[0].message
@@ -189,6 +202,7 @@ final_response = client.chat.completions.create(
     # 传入“包含工具结果”的完整消息
     messages=messages,
 )
+print_model_response("final_response", final_response)
 
 # 打印最终回答内容（为空时打印空字符串，避免 None 报错）
 print(final_response.choices[0].message.content or "")
